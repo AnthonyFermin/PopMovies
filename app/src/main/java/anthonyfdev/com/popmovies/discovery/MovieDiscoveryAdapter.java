@@ -4,11 +4,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import anthonyfdev.com.popmovies.R;
+import anthonyfdev.com.popmovies.common.TMDBNetworkHelper;
 import anthonyfdev.com.popmovies.discovery.model.Movie;
 
 /**
@@ -22,6 +26,7 @@ class MovieDiscoveryAdapter extends RecyclerView.Adapter<MovieDiscoveryAdapter.M
     public void setMovieList(List<Movie> movieList) {
         this.movieList.clear();
         this.movieList.addAll(movieList);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -40,14 +45,23 @@ class MovieDiscoveryAdapter extends RecyclerView.Adapter<MovieDiscoveryAdapter.M
         return movieList.size();
     }
 
-    public static class MovieDiscoveryViewHolder extends RecyclerView.ViewHolder {
+    public class MovieDiscoveryViewHolder extends RecyclerView.ViewHolder {
+
+        ImageView ivPoster;
 
         public MovieDiscoveryViewHolder(View itemView) {
             super(itemView);
+            ivPoster = (ImageView) itemView.findViewById(R.id.iv_poster);
         }
 
         public void bind(int pos) {
-            // TODO: bind view
+            if (pos < movieList.size() && pos >= 0) {
+                Movie movie = movieList.get(pos);
+                Picasso.with(itemView.getContext())
+                        .load(TMDBNetworkHelper.BASE_IMAGE_URL + movie.getPosterThumbnail())
+                        .fit()
+                        .into(ivPoster);
+            }
         }
     }
 }

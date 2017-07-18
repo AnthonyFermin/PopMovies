@@ -15,7 +15,7 @@ import anthonyfdev.com.popmovies.common.BaseModel;
 
 public class Movie extends BaseModel implements Parcelable {
     private String title;
-    private String imageThumbnail;
+    private String posterThumbnail;
     private String overview;
     private int voteAverage;
     private String releaseDate;
@@ -28,12 +28,12 @@ public class Movie extends BaseModel implements Parcelable {
         this.title = title;
     }
 
-    public String getImageThumbnail() {
-        return imageThumbnail;
+    public String getPosterThumbnail() {
+        return posterThumbnail;
     }
 
-    public void setImageThumbnail(String imageThumbnail) {
-        this.imageThumbnail = imageThumbnail;
+    public void setPosterThumbnail(String posterThumbnail) {
+        this.posterThumbnail = posterThumbnail;
     }
 
     public String getOverview() {
@@ -63,7 +63,7 @@ public class Movie extends BaseModel implements Parcelable {
     @Override
     public void parseJson(JSONObject jsonObject) {
         title = jsonObject.optString("title");
-        imageThumbnail = jsonObject.optString("backdrop_path");
+        posterThumbnail = jsonObject.optString("poster_path");
         overview = jsonObject.optString("overview");
         voteAverage = jsonObject.optInt("vote_average");
         releaseDate = jsonObject.optString("release_date");
@@ -80,7 +80,7 @@ public class Movie extends BaseModel implements Parcelable {
 
     protected Movie(Parcel in) {
         title = in.readString();
-        imageThumbnail = in.readString();
+        posterThumbnail = in.readString();
         overview = in.readString();
         voteAverage = in.readInt();
         releaseDate = in.readString();
@@ -106,7 +106,7 @@ public class Movie extends BaseModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(title);
-        parcel.writeString(imageThumbnail);
+        parcel.writeString(posterThumbnail);
         parcel.writeString(overview);
         parcel.writeInt(voteAverage);
         parcel.writeString(releaseDate);

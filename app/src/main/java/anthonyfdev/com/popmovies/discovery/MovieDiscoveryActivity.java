@@ -1,29 +1,25 @@
 package anthonyfdev.com.popmovies.discovery;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import anthonyfdev.com.popmovies.R;
 import anthonyfdev.com.popmovies.common.BaseModelAsyncTask;
+import anthonyfdev.com.popmovies.common.TMDBNetworkHelper;
 import anthonyfdev.com.popmovies.discovery.model.MovieResponse;
 
 public class MovieDiscoveryActivity extends AppCompatActivity {
 
-    private static final String BASE_URL = "http://api.themoviedb.org/3";
     private static final String ENDPOINT_POPULAR = "/movie/popular";
     private static final String ENDPOINT_TOP_RATED = "/movie/top_rated";
-    private static final String PARAM_API_KEY = "api_key=";
     private static final int SPAN_COUNT = 2;
     private RecyclerView rvMovies;
     private MovieDiscoveryAdapter adapter;
@@ -44,7 +40,7 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
         buildUrl(ENDPOINT_POPULAR);
 
         movieAsyncTask = new BaseModelAsyncTask<>(movieAsyncTaskListener, MovieResponse.class);
-        movieAsyncTask.execute();
+        movieAsyncTask.execute(currentEndpoint);
     }
 
     @Override
@@ -74,13 +70,7 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
     }
 
     private void buildUrl(String endpoint) {
-        try {
-            currentEndpoint = new URL(Uri.parse(BASE_URL + endpoint).buildUpon()
-                    .appendQueryParameter(PARAM_API_KEY, getString(R.string.movie_db_api_key))
-                    .build().toString());
-        } catch (MalformedURLException e) {
-            Log.d("MovieDiscoveryActivity", "Url not formed correctly!", e);
-        }
+        currentEndpoint = TMDBNetworkHelper.buildUrl(this, endpoint);
     }
 
     private void bindViews() {
