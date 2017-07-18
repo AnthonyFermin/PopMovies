@@ -1,6 +1,7 @@
 package anthonyfdev.com.popmovies.common;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,12 +17,22 @@ import java.util.Scanner;
  * @author Anthony Fermin (Fuzz)
  */
 
-public class BaseModelAsyncTask<T extends BaseModel> extends AsyncTask<URL, Void, T > {
+public class BaseModelAsyncTask<T extends BaseModel> extends AsyncTask<URL, Void, T> {
 
+    @NonNull
+    private final AsyncTaskListener listener;
+    @NonNull
     private final Class<T> resultClass;
 
-    public BaseModelAsyncTask(Class<T> modelClazz) {
+    public BaseModelAsyncTask(@NonNull AsyncTaskListener listener, @NonNull Class<T> modelClazz) {
+        this.listener = listener;
         this.resultClass = modelClazz;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        listener.onPreExecute();
     }
 
     @Override
@@ -59,6 +70,12 @@ public class BaseModelAsyncTask<T extends BaseModel> extends AsyncTask<URL, Void
         return results;
     }
 
+    @Override
+    protected void onPostExecute(T t) {
+        super.onPostExecute(t);
+        listener.onPostExecute(t);
+    }
+
     private String readStream(InputStream is) {
         BufferedInputStream bis = new BufferedInputStream(is);
         String resultString = null;
@@ -75,5 +92,11 @@ public class BaseModelAsyncTask<T extends BaseModel> extends AsyncTask<URL, Void
             e.printStackTrace();
         }
         return resultString;
+    }
+
+    public interface AsyncTaskListener {
+        void onPreExecute();
+
+        <T> void onPostExecute(T result);
     }
 }
