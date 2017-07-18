@@ -5,7 +5,7 @@ import org.json.JSONObject;
 /**
  * Base model for basic network requests
  *
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin
  */
 
 public class BaseModel {

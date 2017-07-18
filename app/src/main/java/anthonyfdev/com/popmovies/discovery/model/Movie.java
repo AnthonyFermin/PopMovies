@@ -17,7 +17,7 @@ public class Movie extends BaseModel implements Parcelable {
     private String title;
     private String imageThumbnail;
     private String overview;
-    private String voteAverage;
+    private int voteAverage;
     private String releaseDate;
 
     public String getTitle() {
@@ -44,11 +44,11 @@ public class Movie extends BaseModel implements Parcelable {
         this.overview = overview;
     }
 
-    public String getVoteAverage() {
+    public int getVoteAverage() {
         return voteAverage;
     }
 
-    public void setVoteAverage(String voteAverage) {
+    public void setVoteAverage(int voteAverage) {
         this.voteAverage = voteAverage;
     }
 
@@ -62,14 +62,27 @@ public class Movie extends BaseModel implements Parcelable {
 
     @Override
     public void parseJson(JSONObject jsonObject) {
-        //TODO: extract fields from jsonObject
+        title = jsonObject.optString("title");
+        imageThumbnail = jsonObject.optString("backdrop_path");
+        overview = jsonObject.optString("overview");
+        voteAverage = jsonObject.optInt("vote_average");
+        releaseDate = jsonObject.optString("release_date");
     }
+
+    public Movie() {
+        //no-op
+    }
+
+    public Movie(JSONObject jsonObject) {
+        parseJson(jsonObject);
+    }
+
 
     protected Movie(Parcel in) {
         title = in.readString();
         imageThumbnail = in.readString();
         overview = in.readString();
-        voteAverage = in.readString();
+        voteAverage = in.readInt();
         releaseDate = in.readString();
     }
 
@@ -95,7 +108,7 @@ public class Movie extends BaseModel implements Parcelable {
         parcel.writeString(title);
         parcel.writeString(imageThumbnail);
         parcel.writeString(overview);
-        parcel.writeString(voteAverage);
+        parcel.writeInt(voteAverage);
         parcel.writeString(releaseDate);
     }
 }

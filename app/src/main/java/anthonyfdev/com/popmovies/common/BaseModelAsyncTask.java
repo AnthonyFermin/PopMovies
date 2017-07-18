@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.Scanner;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin
  */
 
 public class BaseModelAsyncTask<T extends BaseModel> extends AsyncTask<URL, Void, T> {
@@ -94,9 +94,9 @@ public class BaseModelAsyncTask<T extends BaseModel> extends AsyncTask<URL, Void
         return resultString;
     }
 
-    public interface AsyncTaskListener {
+    public interface AsyncTaskListener<T> {
         void onPreExecute();
 
-        <T> void onPostExecute(T result);
+        void onPostExecute(T result);
     }
 }
