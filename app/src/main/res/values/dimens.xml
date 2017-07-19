@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="poster_width">200dp</dimen>
-    <dimen name="poster_height">300dp</dimen>
+    <dimen name="MovieDiscovery_PosterHeight">300dp</dimen>
+    <dimen name="MovieDetail_TitleTextSize">32sp</dimen>
+    <dimen name="MovieDetail_PosterWidth">150dp</dimen>
+    <dimen name="MovieDetail_HeaderTextSize">20sp</dimen>
+    <dimen name="MovieDetail_StandardTextSize">16sp</dimen>
+    <dimen name="MovieDetail_PosterMinHeight">200dp</dimen>
 </resources>

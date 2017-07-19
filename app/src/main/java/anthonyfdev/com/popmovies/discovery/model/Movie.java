@@ -8,13 +8,14 @@ import org.json.JSONObject;
 import anthonyfdev.com.popmovies.common.BaseModel;
 
 /**
- * Pojo representing a movie from TMDB
+ * Object representing a movie from TMDB
  *
  * @author Anthony Fermin
  */
 
 public class Movie extends BaseModel implements Parcelable {
     private String title;
+    private String originalTitle;
     private String posterThumbnail;
     private String overview;
     private int voteAverage;
@@ -26,6 +27,14 @@ public class Movie extends BaseModel implements Parcelable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getOriginalTitle() {
+        return originalTitle;
+    }
+
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
     }
 
     public String getPosterThumbnail() {
@@ -63,6 +72,7 @@ public class Movie extends BaseModel implements Parcelable {
     @Override
     public void parseJson(JSONObject jsonObject) {
         title = jsonObject.optString("title");
+        originalTitle = jsonObject.optString("original_title");
         posterThumbnail = jsonObject.optString("poster_path");
         overview = jsonObject.optString("overview");
         voteAverage = jsonObject.optInt("vote_average");
@@ -78,12 +88,14 @@ public class Movie extends BaseModel implements Parcelable {
     }
 
 
+    @SuppressWarnings("WeakerAccess")
     protected Movie(Parcel in) {
         title = in.readString();
         posterThumbnail = in.readString();
         overview = in.readString();
         voteAverage = in.readInt();
         releaseDate = in.readString();
+        originalTitle = in.readString();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -110,5 +122,6 @@ public class Movie extends BaseModel implements Parcelable {
         parcel.writeString(overview);
         parcel.writeInt(voteAverage);
         parcel.writeString(releaseDate);
+        parcel.writeString(originalTitle);
     }
 }

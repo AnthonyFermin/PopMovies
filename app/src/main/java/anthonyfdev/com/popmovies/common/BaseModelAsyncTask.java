@@ -20,11 +20,11 @@ import java.util.Scanner;
 public class BaseModelAsyncTask<T extends BaseModel> extends AsyncTask<URL, Void, T> {
 
     @NonNull
-    private final AsyncTaskListener listener;
+    private final AsyncTaskListener<T> listener;
     @NonNull
     private final Class<T> resultClass;
 
-    public BaseModelAsyncTask(@NonNull AsyncTaskListener listener, @NonNull Class<T> modelClazz) {
+    public BaseModelAsyncTask(@NonNull AsyncTaskListener<T> listener, @NonNull Class<T> modelClazz) {
         this.listener = listener;
         this.resultClass = modelClazz;
     }
@@ -40,12 +40,10 @@ public class BaseModelAsyncTask<T extends BaseModel> extends AsyncTask<URL, Void
         URL url = urls[0];
         T results = null;
         String resultString = null;
-        HttpURLConnection connection = null;
-        InputStream is = null;
         try {
-            connection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             try {
-                is = connection.getInputStream();
+                InputStream is = connection.getInputStream();
                 if (is != null) {
                     resultString = readStream(is);
                 }
@@ -78,25 +76,23 @@ public class BaseModelAsyncTask<T extends BaseModel> extends AsyncTask<URL, Void
 
     private String readStream(InputStream is) {
         BufferedInputStream bis = new BufferedInputStream(is);
-        String resultString = null;
         Scanner scanner = new Scanner(bis);
+        scanner.useDelimiter("\\A");
 
         StringBuilder sb = new StringBuilder();
         while (scanner.hasNext()) {
             sb.append(scanner.next());
         }
-        resultString = sb.toString();
         try {
             bis.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return resultString;
+        return sb.toString();
     }
 
     public interface AsyncTaskListener<T> {
         void onPreExecute();
-
         void onPostExecute(T result);
     }
 }

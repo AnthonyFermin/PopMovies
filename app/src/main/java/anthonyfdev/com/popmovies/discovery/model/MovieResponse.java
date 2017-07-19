@@ -13,7 +13,7 @@ import anthonyfdev.com.popmovies.common.BaseModel;
  */
 
 public class MovieResponse extends BaseModel {
-    private List<Movie> results = new ArrayList<>();
+    private final List<Movie> results = new ArrayList<>();
 
     public MovieResponse() {
         //no-op

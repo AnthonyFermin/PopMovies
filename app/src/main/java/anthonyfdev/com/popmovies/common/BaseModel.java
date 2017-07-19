@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 public class BaseModel {
 
-    public BaseModel() {
+    protected BaseModel() {
     }
 
     public void parseJson(JSONObject jsonObject) {

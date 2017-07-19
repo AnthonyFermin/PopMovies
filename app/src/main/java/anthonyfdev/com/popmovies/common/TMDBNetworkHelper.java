@@ -18,8 +18,8 @@ import anthonyfdev.com.popmovies.R;
 public class TMDBNetworkHelper {
 
     public static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185";
-    public static final String BASE_URL = "http://api.themoviedb.org/3";
-    public static final String PARAM_API_KEY = "api_key";
+    private static final String BASE_URL = "http://api.themoviedb.org/3";
+    private static final String PARAM_API_KEY = "api_key";
 
     @Nullable
     public static URL buildUrl(@NonNull Context context, @NonNull String endpoint) {

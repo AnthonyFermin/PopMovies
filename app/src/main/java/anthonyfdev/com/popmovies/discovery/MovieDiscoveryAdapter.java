@@ -1,5 +1,7 @@
 package anthonyfdev.com.popmovies.discovery;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +23,7 @@ import anthonyfdev.com.popmovies.discovery.model.Movie;
 
 class MovieDiscoveryAdapter extends RecyclerView.Adapter<MovieDiscoveryAdapter.MovieDiscoveryViewHolder> {
 
-    List<Movie> movieList = new ArrayList<>();
+    private final List<Movie> movieList = new ArrayList<>();
 
     public void setMovieList(List<Movie> movieList) {
         this.movieList.clear();
@@ -45,16 +47,28 @@ class MovieDiscoveryAdapter extends RecyclerView.Adapter<MovieDiscoveryAdapter.M
         return movieList.size();
     }
 
-    public class MovieDiscoveryViewHolder extends RecyclerView.ViewHolder {
+    class MovieDiscoveryViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView ivPoster;
+        private final ImageView ivPoster;
 
-        public MovieDiscoveryViewHolder(View itemView) {
+        MovieDiscoveryViewHolder(View itemView) {
             super(itemView);
             ivPoster = (ImageView) itemView.findViewById(R.id.iv_poster);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Context context = view.getContext();
+                    if (context != null) {
+                        Movie movie = movieList.get(getAdapterPosition());
+                        Intent intent = new Intent(context, MovieDetailActivity.class);
+                        intent.putExtra(MovieDetailActivity.ARG_MOVIE, movie);
+                        context.startActivity(intent);
+                    }
+                }
+            });
         }
 
-        public void bind(int pos) {
+        void bind(int pos) {
             if (pos < movieList.size() && pos >= 0) {
                 Movie movie = movieList.get(pos);
                 Picasso.with(itemView.getContext())

@@ -2,6 +2,7 @@ package anthonyfdev.com.popmovies.discovery;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,9 +19,10 @@ import anthonyfdev.com.popmovies.discovery.model.MovieResponse;
 
 public class MovieDiscoveryActivity extends AppCompatActivity {
 
+    private static final String TAG = MovieDiscoveryActivity.class.getSimpleName();
     private static final String ENDPOINT_POPULAR = "/movie/popular";
     private static final String ENDPOINT_TOP_RATED = "/movie/top_rated";
-    private static final int SPAN_COUNT = 2;
+    private static final String ARG_CURRENT_ENDPOINT = TAG + ":argCurrentEndpoint";
     private RecyclerView rvMovies;
     private MovieDiscoveryAdapter adapter;
     private BaseModelAsyncTask<MovieResponse> movieAsyncTask;
@@ -28,24 +30,28 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
     private URL currentEndpoint;
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(ARG_CURRENT_ENDPOINT, currentEndpoint);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_discovery);
         bindViews();
+        initializeRecyclerView();
+        restoreInstanceState(savedInstanceState);
+        if (currentEndpoint == null) {
+            buildUrl(ENDPOINT_POPULAR);
+        }
 
-        adapter = new MovieDiscoveryAdapter();
-        rvMovies.setLayoutManager(new GridLayoutManager(this, SPAN_COUNT));
-        rvMovies.setAdapter(adapter);
-
-        buildUrl(ENDPOINT_POPULAR);
-
-        movieAsyncTask = new BaseModelAsyncTask<>(movieAsyncTaskListener, MovieResponse.class);
-        movieAsyncTask.execute(currentEndpoint);
+        makeNewMovieRequest(currentEndpoint);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_movie_discovery_sort, menu);
+        getMenuInflater().inflate(R.menu.menu_movie_discovery, menu);
         return true;
     }
 
@@ -62,11 +68,28 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void restoreInstanceState(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            currentEndpoint = (URL) savedInstanceState.getSerializable(ARG_CURRENT_ENDPOINT);
+        }
+    }
+
+    private void initializeRecyclerView() {
+        int spanCount = getResources().getInteger(R.integer.MovieDiscovery_PosterSpan);
+        adapter = new MovieDiscoveryAdapter();
+        rvMovies.setLayoutManager(new GridLayoutManager(this, spanCount));
+        rvMovies.setAdapter(adapter);
+    }
+
     private void refreshListWithNewCall(@NonNull String endpoint) {
         buildUrl(endpoint);
         movieAsyncTask.cancel(true);
+        makeNewMovieRequest(currentEndpoint);
+    }
+
+    private void makeNewMovieRequest(URL endpoint) {
         movieAsyncTask = new BaseModelAsyncTask<>(movieAsyncTaskListener, MovieResponse.class);
-        movieAsyncTask.execute(currentEndpoint);
+        movieAsyncTask.execute(endpoint);
     }
 
     private void buildUrl(String endpoint) {
