@@ -112,6 +112,11 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
             flLoadingIndicator.setVisibility(View.GONE);
             if (result != null) {
                 adapter.setMovieList(result.getResults());
+                if (result.getResults().isEmpty()) {
+                    //TODO: show error
+                }
+            } else {
+                //TODO: show error
             }
         }
     };
