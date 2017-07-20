@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">PopMovies</string>
-    <string name="MovieDiscovery_Popular">Popular</string>
-    <string name="MovieDiscovery_TopRated">Top Rated</string>
+    <string name="MovieDiscovery_Popular">Sort by most popular</string>
+    <string name="MovieDiscovery_TopRated">Sort by top rated</string>
     <string name="Accessibility_MoviePoster">Movie Poster</string>
     <string name="MovieDetail_OutOfTen">%1$s/10</string>
     <string name="MovieDiscovery_ErrorMessage">An error has occurred. Please try again.</string>
     <string name="MovieDiscovery_Retry">Retry</string>
+    <string name="MovieDetail_Title">Movie Detail</string>
 </resources>

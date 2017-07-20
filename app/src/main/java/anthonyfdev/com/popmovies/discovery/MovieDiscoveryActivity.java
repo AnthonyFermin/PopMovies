@@ -3,6 +3,7 @@ package anthonyfdev.com.popmovies.discovery;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -64,10 +65,14 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sort_popular:
-                refreshListWithNewCall(ENDPOINT_POPULAR);
+                if (currentEndpoint == null || !currentEndpoint.toString().contains(ENDPOINT_POPULAR)) {
+                    refreshListWithNewCall(ENDPOINT_POPULAR);
+                }
                 return true;
             case R.id.action_sort_top_rated:
-                refreshListWithNewCall(ENDPOINT_TOP_RATED);
+                if (currentEndpoint == null || !currentEndpoint.toString().contains(ENDPOINT_TOP_RATED)) {
+                    refreshListWithNewCall(ENDPOINT_TOP_RATED);
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -113,6 +118,18 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
     }
 
     private void buildUrl(String endpoint) {
+        String title;
+        if (ENDPOINT_POPULAR.equals(endpoint)) {
+            title = "Popular Movies";
+        } else if (ENDPOINT_TOP_RATED.equals(endpoint)) {
+            title = "Top Rated Movies";
+        } else {
+            title = "Movies";
+        }
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(title);
+        }
         currentEndpoint = TMDBNetworkHelper.buildUrl(this, endpoint);
     }
 

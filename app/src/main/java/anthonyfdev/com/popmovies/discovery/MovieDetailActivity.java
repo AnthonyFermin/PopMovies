@@ -2,6 +2,7 @@ package anthonyfdev.com.popmovies.discovery;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,6 +47,10 @@ public class MovieDetailActivity extends AppCompatActivity {
                 .load(TMDBNetworkHelper.BASE_IMAGE_URL + movie.getPosterThumbnail())
                 .fit()
                 .into(ivPoster);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(R.string.MovieDetail_Title);
+        }
     }
 
     private void bindViews() {
