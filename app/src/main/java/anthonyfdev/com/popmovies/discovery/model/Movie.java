@@ -25,48 +25,25 @@ public class Movie extends BaseModel implements Parcelable {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getOriginalTitle() {
         return originalTitle;
-    }
-
-    public void setOriginalTitle(String originalTitle) {
-        this.originalTitle = originalTitle;
     }
 
     public String getPosterThumbnail() {
         return posterThumbnail;
     }
 
-    public void setPosterThumbnail(String posterThumbnail) {
-        this.posterThumbnail = posterThumbnail;
-    }
-
     public String getOverview() {
         return overview;
-    }
-
-    public void setOverview(String overview) {
-        this.overview = overview;
     }
 
     public int getVoteAverage() {
         return voteAverage;
     }
 
-    public void setVoteAverage(int voteAverage) {
-        this.voteAverage = voteAverage;
-    }
 
     public String getReleaseDate() {
         return releaseDate;
-    }
-
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
     }
 
     @Override
