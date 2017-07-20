@@ -9,11 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import java.net.URL;
 
 import anthonyfdev.com.popmovies.R;
 import anthonyfdev.com.popmovies.common.BaseModelAsyncTask;
+import anthonyfdev.com.popmovies.common.NetworkUtils;
 import anthonyfdev.com.popmovies.common.TMDBNetworkHelper;
 import anthonyfdev.com.popmovies.discovery.model.MovieResponse;
 
@@ -28,6 +30,8 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
     private BaseModelAsyncTask<MovieResponse> movieAsyncTask;
     private View flLoadingIndicator;
     private URL currentEndpoint;
+    private View rlErrorContainer;
+    private Button bRetry;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -40,6 +44,7 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_discovery);
         bindViews();
+        setupViews();
         initializeRecyclerView();
         restoreInstanceState(savedInstanceState);
         if (currentEndpoint == null) {
@@ -83,13 +88,28 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
 
     private void refreshListWithNewCall(@NonNull String endpoint) {
         buildUrl(endpoint);
-        movieAsyncTask.cancel(true);
-        makeNewMovieRequest(currentEndpoint);
+        refreshListWithCurrentEndpoint();
+    }
+
+    private void refreshListWithCurrentEndpoint() {
+        if (NetworkUtils.isConnected(this)) {
+            if (movieAsyncTask != null) {
+                movieAsyncTask.cancel(true);
+            }
+            makeNewMovieRequest(currentEndpoint);
+        } else {
+            showErrorMessage();
+        }
     }
 
     private void makeNewMovieRequest(URL endpoint) {
-        movieAsyncTask = new BaseModelAsyncTask<>(movieAsyncTaskListener, MovieResponse.class);
-        movieAsyncTask.execute(endpoint);
+        if (endpoint != null && NetworkUtils.isConnected(this)) {
+            movieAsyncTask = new BaseModelAsyncTask<>(movieAsyncTaskListener, MovieResponse.class);
+            movieAsyncTask.execute(endpoint);
+        } else {
+            buildUrl(ENDPOINT_POPULAR);
+            showErrorMessage();
+        }
     }
 
     private void buildUrl(String endpoint) {
@@ -99,12 +119,23 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
     private void bindViews() {
         rvMovies = (RecyclerView) findViewById(R.id.rv_movies);
         flLoadingIndicator = findViewById(R.id.fl_loading);
+        rlErrorContainer = findViewById(R.id.rl_error_container);
+        bRetry = (Button) findViewById(R.id.b_retry);
     }
 
-    private final BaseModelAsyncTask.AsyncTaskListener movieAsyncTaskListener = new BaseModelAsyncTask.AsyncTaskListener<MovieResponse>() {
+    private void setupViews() {
+        bRetry.setOnClickListener(retryOnClickListener);
+    }
+
+    private void showErrorMessage() {
+        rlErrorContainer.setVisibility(View.VISIBLE);
+    }
+
+    private final BaseModelAsyncTask.AsyncTaskListener<MovieResponse> movieAsyncTaskListener = new BaseModelAsyncTask.AsyncTaskListener<MovieResponse>() {
         @Override
         public void onPreExecute() {
             flLoadingIndicator.setVisibility(View.VISIBLE);
+            rlErrorContainer.setVisibility(View.GONE);
         }
 
         @Override
@@ -113,11 +144,18 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
             if (result != null) {
                 adapter.setMovieList(result.getResults());
                 if (result.getResults().isEmpty()) {
-                    //TODO: show error
+                    showErrorMessage();
                 }
             } else {
-                //TODO: show error
+                showErrorMessage();
             }
+        }
+    };
+
+    private final View.OnClickListener retryOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            refreshListWithCurrentEndpoint();
         }
     };
 }

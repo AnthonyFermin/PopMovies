@@ -6,4 +6,5 @@
     <dimen name="MovieDetail_HeaderTextSize">20sp</dimen>
     <dimen name="MovieDetail_StandardTextSize">16sp</dimen>
     <dimen name="MovieDetail_PosterMinHeight">200dp</dimen>
+    <dimen name="MovieDiscovery_ErrorTextSize">24sp</dimen>
 </resources>

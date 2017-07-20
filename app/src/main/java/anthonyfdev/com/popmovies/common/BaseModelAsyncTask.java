@@ -19,6 +19,8 @@ import java.util.Scanner;
 
 public class BaseModelAsyncTask<T extends BaseModel> extends AsyncTask<URL, Void, T> {
 
+    private static final int MS_READ_TIMEOUT = 15000;
+    private static final int MS_CONNECT_TIMEOUT = 15000;
     @NonNull
     private final AsyncTaskListener<T> listener;
     @NonNull
@@ -42,6 +44,8 @@ public class BaseModelAsyncTask<T extends BaseModel> extends AsyncTask<URL, Void
         String resultString = null;
         try {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(MS_CONNECT_TIMEOUT);
+            connection.setReadTimeout(MS_READ_TIMEOUT);
             try {
                 InputStream is = connection.getInputStream();
                 if (is != null) {

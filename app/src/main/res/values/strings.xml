@@ -4,4 +4,6 @@
     <string name="MovieDiscovery_TopRated">Top Rated</string>
     <string name="Accessibility_MoviePoster">Movie Poster</string>
     <string name="MovieDetail_OutOfTen">%1$s/10</string>
+    <string name="MovieDiscovery_ErrorMessage">An error has occurred. Please try again.</string>
+    <string name="MovieDiscovery_Retry">Retry</string>
 </resources>

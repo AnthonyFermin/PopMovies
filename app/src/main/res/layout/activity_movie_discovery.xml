@@ -8,7 +8,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_movies"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/fl_loading"
@@ -21,8 +21,37 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:indeterminate="true"/>
+            android:indeterminate="true" />
 
-        </FrameLayout>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_error_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/MovieDiscovery_ErrorMessage"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/MovieDiscovery_ErrorTextSize"
+            android:layout_margin="16dp"/>
+
+        <Button
+            android:id="@+id/b_retry"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/tv_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/MovieDiscovery_Retry"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

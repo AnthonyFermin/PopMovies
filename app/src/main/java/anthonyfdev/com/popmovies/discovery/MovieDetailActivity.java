@@ -13,7 +13,7 @@ import anthonyfdev.com.popmovies.common.TMDBNetworkHelper;
 import anthonyfdev.com.popmovies.discovery.model.Movie;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin
  */
 
 public class MovieDetailActivity extends AppCompatActivity {
