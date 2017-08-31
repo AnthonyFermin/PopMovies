@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_thumbnail"
+        android:layout_width="@dimen/MovieDetail_TrailerThumbnailWidth"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:contentDescription="@string/Accessibility_MoviePoster"
+        android:minHeight="@dimen/MovieDetail_TrailerThumbnailWidth"
+        tools:background="@android:color/holo_red_light" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:textSize="@dimen/MovieDetail_StandardTextSize"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center_vertical"
+        tools:text="Movie Title"
+        />
+
+</LinearLayout>

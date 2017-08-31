@@ -4,4 +4,8 @@
     <string name="MovieDiscovery_TopRated">Top Rated</string>
     <string name="Accessibility_MoviePoster">Movie Poster</string>
     <string name="MovieDetail_OutOfTen">%1$s/10</string>
+    <string name="MovieDetail_TrailersTitle">Trailers</string>
+    <string name="MovieDetail_NoTrailersFound">No trailers found</string>
+    <string name="MovieDetail_ReviewsTitle">Reviews</string>
+    <string name="MovieDetail_NoReviews">There are currently no reviews</string>
 </resources>

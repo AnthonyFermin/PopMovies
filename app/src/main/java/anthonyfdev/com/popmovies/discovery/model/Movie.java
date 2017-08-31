@@ -20,6 +20,11 @@ public class Movie extends BaseModel implements Parcelable {
     private String overview;
     private int voteAverage;
     private String releaseDate;
+    private String id;
+
+    public String getId() {
+        return id;
+    }
 
     public String getTitle() {
         return title;
@@ -77,6 +82,7 @@ public class Movie extends BaseModel implements Parcelable {
         overview = jsonObject.optString("overview");
         voteAverage = jsonObject.optInt("vote_average");
         releaseDate = jsonObject.optString("release_date");
+        id = jsonObject.optString("id");
     }
 
     public Movie() {
@@ -96,6 +102,7 @@ public class Movie extends BaseModel implements Parcelable {
         voteAverage = in.readInt();
         releaseDate = in.readString();
         originalTitle = in.readString();
+        id = in.readString();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -123,5 +130,6 @@ public class Movie extends BaseModel implements Parcelable {
         parcel.writeInt(voteAverage);
         parcel.writeString(releaseDate);
         parcel.writeString(originalTitle);
+        parcel.writeString(id);
     }
 }

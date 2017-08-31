@@ -101,7 +101,7 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
         flLoadingIndicator = findViewById(R.id.fl_loading);
     }
 
-    private final BaseModelAsyncTask.AsyncTaskListener movieAsyncTaskListener = new BaseModelAsyncTask.AsyncTaskListener<MovieResponse>() {
+    private final BaseModelAsyncTask.AsyncTaskListener<MovieResponse> movieAsyncTaskListener = new BaseModelAsyncTask.AsyncTaskListener<MovieResponse>() {
         @Override
         public void onPreExecute() {
             flLoadingIndicator.setVisibility(View.VISIBLE);

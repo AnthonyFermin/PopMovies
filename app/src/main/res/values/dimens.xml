@@ -6,4 +6,7 @@
     <dimen name="MovieDetail_HeaderTextSize">20sp</dimen>
     <dimen name="MovieDetail_StandardTextSize">16sp</dimen>
     <dimen name="MovieDetail_PosterMinHeight">200dp</dimen>
+    <dimen name="half_margin">8dp</dimen>
+    <dimen name="standard_margin">16dp</dimen>
+    <dimen name="MovieDetail_TrailerThumbnailWidth">100dp</dimen>
 </resources>
