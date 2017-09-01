@@ -8,4 +8,7 @@
     <string name="MovieDetail_NoTrailersFound">No trailers found</string>
     <string name="MovieDetail_ReviewsTitle">Reviews</string>
     <string name="MovieDetail_NoReviews">There are currently no reviews</string>
+    <string name="MovieDetail_Favorite">Favorite</string>
+
+    <string name="content_authority">com.anthonyfdev.popmovies</string>
 </resources>

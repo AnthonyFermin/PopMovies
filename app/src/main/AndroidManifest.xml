@@ -22,6 +22,10 @@
         </activity>
 
         <activity android:name=".discovery.MovieDetailActivity"/>
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".db.FavoritesProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>
