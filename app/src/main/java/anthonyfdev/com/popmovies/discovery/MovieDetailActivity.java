@@ -1,14 +1,17 @@
 package anthonyfdev.com.popmovies.discovery;
 
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,6 +61,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private SharedPreferences favSharedPrefs;
     private boolean initiallyFavorited;
     private boolean isFavorited;
+    private View bottomSheet;
+    private BottomSheetBehavior<View> bottomSheetBehavior;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -163,6 +168,14 @@ public class MovieDetailActivity extends AppCompatActivity {
         trailersView = new TrailersView(this);
         reviewsView = new ReviewsView(this);
         viewPager.setAdapter(new ViewPagerAdapter());
+
+        //Bottom sheet
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        Resources resources = getResources();
+        int peekAmt = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                (float) resources.getInteger(R.integer.MovieDetail_BottomSheetPeekAmount),
+                resources.getDisplayMetrics());
+        bottomSheetBehavior.setPeekHeight(peekAmt);
     }
 
     private void bindViews() {
@@ -171,6 +184,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         tvReleaseDate = (TextView) findViewById(R.id.tv_release_date);
         ivPoster = (ImageView) findViewById(R.id.iv_poster);
         viewPager = (ViewPager) findViewById(R.id.view_pager);
+        bottomSheet = findViewById(R.id.bottom_sheet);
     }
 
     private void deleteMovieFromFavorites() {
