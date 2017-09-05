@@ -43,7 +43,7 @@ public class FavoritesProvider extends ContentProvider {
                         String[] selectionArgs, String sortOrder) {
         Cursor cursor;
         switch (sUriMatcher.match(uri)) {
-            case CODE_FAVORITE: {
+            case CODE_FAVORITE:
                 cursor = mOpenHelper.getReadableDatabase().query(
                         TABLE_NAME,
                         projection,
@@ -53,7 +53,6 @@ public class FavoritesProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
-            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -93,7 +92,6 @@ public class FavoritesProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         switch (sUriMatcher.match(uri)) {
             case CODE_FAVORITE:
-                db.beginTransaction();
                 long id = db.insert(FavoriteContract.FavoriteEntry.TABLE_NAME, null, values);
                 if (id != 0) {
                     getContext().getContentResolver().notifyChange(uri, null);

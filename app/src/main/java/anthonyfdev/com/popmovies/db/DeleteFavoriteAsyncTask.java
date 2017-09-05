@@ -2,6 +2,7 @@ package anthonyfdev.com.popmovies.db;
 
 import android.content.ContentProviderClient;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.RemoteException;
@@ -13,11 +14,14 @@ import android.os.RemoteException;
 public class DeleteFavoriteAsyncTask extends AsyncTask<String, Void, Boolean> {
 
     private final ContentProviderClient provider;
+    private final SharedPreferences sharedPreferences;
     private Listener listener;
+    private String id;
 
-    public DeleteFavoriteAsyncTask(Context context, Listener listener) {
-        this.listener = listener;
+    public DeleteFavoriteAsyncTask(Context context, SharedPreferences sharedPreferences) {
+        listener = new UpdatePrefListener();
         provider = context.getContentResolver().acquireContentProviderClient(FavoriteContract.BASE_CONTENT_URI);
+        this.sharedPreferences = sharedPreferences;
     }
 
     public void setListener(Listener listener) {
@@ -36,7 +40,7 @@ public class DeleteFavoriteAsyncTask extends AsyncTask<String, Void, Boolean> {
     protected Boolean doInBackground(String... params) {
         boolean success = false;
         if (params != null && params[0] != null) {
-            String id = params[0];
+            id = params[0];
             String selection = FavoriteContract.FavoriteEntry.COLUMN_ID + " = ?";
             String[] selectionArgs = new String[1];
             selectionArgs[0] = id;
@@ -67,5 +71,23 @@ public class DeleteFavoriteAsyncTask extends AsyncTask<String, Void, Boolean> {
         void onPreExecute();
 
         void onPostExecute(Boolean bool);
+    }
+
+    public class UpdatePrefListener implements Listener {
+        @Override
+        public void onPreExecute() {
+
+        }
+
+        @Override
+        public void onPostExecute(Boolean bool) {
+            if (id != null) {
+                if (bool) {
+                    sharedPreferences.edit().remove(id).apply();
+                } else {
+                    sharedPreferences.edit().putBoolean(id, true).apply();
+                }
+            }
+        }
     }
 }

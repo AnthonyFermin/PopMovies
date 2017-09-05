@@ -22,6 +22,7 @@ import java.net.URL;
 
 import anthonyfdev.com.popmovies.R;
 import anthonyfdev.com.popmovies.common.BaseModelAsyncTask;
+import anthonyfdev.com.popmovies.common.Constants;
 import anthonyfdev.com.popmovies.common.TMDBNetworkHelper;
 import anthonyfdev.com.popmovies.db.DeleteFavoriteAsyncTask;
 import anthonyfdev.com.popmovies.db.InsertFavoriteAsyncTask;
@@ -40,7 +41,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private static final String PATH_TRAILERS = "/movie/$s1/videos";
     private static final String PATH_REVIEWS = "/movie/$s1/reviews";
     private static final int VIEW_PAGER_COUNT = 2;
-    private static final String SHARED_PREFS_FAVORITES = "sharedPrefsFavorites";
+    private static final String SIS_KEY_INITIALLY_FAVORITED = TAG + ":initiallyFavorited";
+    private static final String SIS_KEY_IS_FAVORITED = TAG + ":isFavorited";
     private Movie movie;
     private TextView tvOverView;
     private TextView tvRating;
@@ -55,14 +57,20 @@ public class MovieDetailActivity extends AppCompatActivity {
     private ReviewsView reviewsView;
     private SharedPreferences favSharedPrefs;
     private boolean initiallyFavorited;
+    private boolean isFavorited;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
         movie = getIntent().getParcelableExtra(ARG_MOVIE);
-        favSharedPrefs = getSharedPreferences(SHARED_PREFS_FAVORITES, MODE_PRIVATE);
-        initiallyFavorited = isMovieFavorited();
+        favSharedPrefs = getSharedPreferences(Constants.SHARED_PREFS_FAVORITES, MODE_PRIVATE);
+        if (savedInstanceState != null) {
+            initiallyFavorited = savedInstanceState.getBoolean(SIS_KEY_INITIALLY_FAVORITED, isMovieFavorited());
+            isFavorited = savedInstanceState.getBoolean(SIS_KEY_IS_FAVORITED, initiallyFavorited);
+        } else {
+            initiallyFavorited = isFavorited = isMovieFavorited();
+        }
         bindViews();
         setupViews();
         fetchTrailers();
@@ -77,10 +85,17 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        int colorId = isMovieFavorited() ? R.color.colorAccent : android.R.color.darker_gray;
+        int colorId = isFavorited ? R.color.colorAccent : android.R.color.darker_gray;
         int color = ContextCompat.getColor(this, colorId);
         menu.findItem(R.id.action_favorite).getIcon().setColorFilter(color, PorterDuff.Mode.SRC_IN);
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SIS_KEY_INITIALLY_FAVORITED, initiallyFavorited);
+        outState.putBoolean(SIS_KEY_IS_FAVORITED, isFavorited);
     }
 
     private boolean isMovieFavorited() {
@@ -88,12 +103,12 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private void favoriteMovie() {
-        favSharedPrefs.edit().putBoolean(movie.getId(), true).apply();
+        isFavorited = true;
         invalidateOptionsMenu();
     }
 
     private void unfavoriteMovie() {
-        favSharedPrefs.edit().remove(movie.getId()).apply();
+        isFavorited = false;
         invalidateOptionsMenu();
     }
 
@@ -111,7 +126,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private void toggleFavorite() {
-        if (isMovieFavorited()) {
+        if (isFavorited) {
             unfavoriteMovie();
         } else {
             favoriteMovie();
@@ -162,7 +177,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (insertFavoriteAsyncTask != null) {
             insertFavoriteAsyncTask.cancel(true);
         }
-        deleteFavoriteAsyncTask = new DeleteFavoriteAsyncTask(this, null);
+        deleteFavoriteAsyncTask = new DeleteFavoriteAsyncTask(this, favSharedPrefs);
         deleteFavoriteAsyncTask.execute(movie.getId());
     }
 
@@ -170,15 +185,15 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (deleteFavoriteAsyncTask != null) {
             deleteFavoriteAsyncTask.cancel(true);
         }
-        insertFavoriteAsyncTask = new InsertFavoriteAsyncTask(this, null);
+        insertFavoriteAsyncTask = new InsertFavoriteAsyncTask(this, favSharedPrefs);
         insertFavoriteAsyncTask.execute(movie);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (isMovieFavorited() != initiallyFavorited) {
-            if (isMovieFavorited()) {
+        if (isFavorited != initiallyFavorited) {
+            if (isFavorited) {
                 saveMovieToFavorites();
             } else {
                 deleteMovieFromFavorites();

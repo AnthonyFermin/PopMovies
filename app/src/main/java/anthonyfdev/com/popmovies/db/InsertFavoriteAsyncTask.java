@@ -3,6 +3,7 @@ package anthonyfdev.com.popmovies.db;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.RemoteException;
@@ -16,10 +17,13 @@ import anthonyfdev.com.popmovies.discovery.model.Movie;
 public class InsertFavoriteAsyncTask extends AsyncTask<Movie, Void, Boolean> {
 
     private final ContentProviderClient provider;
+    private final SharedPreferences sharedPreferences;
     private Listener listener;
+    private String id;
 
-    public InsertFavoriteAsyncTask(Context context, Listener listener) {
-        this.listener = listener;
+    public InsertFavoriteAsyncTask(Context context, SharedPreferences sharedPreferences) {
+        this.sharedPreferences = sharedPreferences;
+        listener = new UpdatePrefListener();
         provider = context.getContentResolver().acquireContentProviderClient(FavoriteContract.BASE_CONTENT_URI);
     }
 
@@ -38,7 +42,11 @@ public class InsertFavoriteAsyncTask extends AsyncTask<Movie, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Movie... params) {
         boolean success = false;
-        if (params != null && params[0] != null) {
+        if (params != null
+                && params[0] != null
+                && params[0].getId() != null
+                && !params[0].getId().isEmpty()) {
+            id = params[0].getId();
             ContentValues contentValues = retrieveContentValue(params[0]);
             Uri uri = new Uri.Builder()
                     .authority(FavoriteContract.CONTENT_AUTHORITY)
@@ -66,6 +74,24 @@ public class InsertFavoriteAsyncTask extends AsyncTask<Movie, Void, Boolean> {
     public interface Listener {
         void onPreExecute();
         void onPostExecute(Boolean bool);
+    }
+
+    public class UpdatePrefListener implements Listener {
+        @Override
+        public void onPreExecute() {
+
+        }
+
+        @Override
+        public void onPostExecute(Boolean bool) {
+            if (id != null) {
+                if (bool) {
+                    sharedPreferences.edit().putBoolean(id, true).apply();
+                } else {
+                    sharedPreferences.edit().remove(id).apply();
+                }
+            }
+        }
     }
 
     private ContentValues retrieveContentValue(Movie movie) {

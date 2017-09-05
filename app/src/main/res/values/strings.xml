@@ -11,4 +11,11 @@
     <string name="MovieDetail_Favorite">Favorite</string>
 
     <string name="content_authority">com.anthonyfdev.popmovies</string>
+    <string name="MovieDiscovery_Favorites">Favorites</string>
+    <string name="GenericErrorString">An error occurred. Please try again later.</string>
+    <string name="MovieDiscovery_NoFavoritesFound">You currently have no favorites.</string>
+    <string name="MovieDiscovery_NoMoviesFound">No movies were found. Please try again later.</string>
+    <string name="MovieDiscovery_MyFavoriteMovies">My Favorite Movies</string>
+    <string name="MovieDiscovery_PopularMovies">Popular Movies</string>
+    <string name="MovieDiscovery_TopRatedMovies">Top Rated Movies</string>
 </resources>
