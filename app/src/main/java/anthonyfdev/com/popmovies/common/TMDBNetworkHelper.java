@@ -12,7 +12,7 @@ import java.net.URL;
 import anthonyfdev.com.popmovies.R;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin
  */
 
 public class TMDBNetworkHelper {

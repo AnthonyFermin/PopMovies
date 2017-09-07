@@ -34,7 +34,7 @@ import anthonyfdev.com.popmovies.discovery.model.ReviewResponse;
 import anthonyfdev.com.popmovies.discovery.model.TrailerResponse;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin ()
  */
 
 public class MovieDetailActivity extends AppCompatActivity {

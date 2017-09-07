@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import anthonyfdev.com.popmovies.common.BaseModel;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin ()
  */
 
 public class Review extends BaseModel {

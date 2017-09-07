@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin
  */
 
 public class FavoritesOpenHelper extends SQLiteOpenHelper {

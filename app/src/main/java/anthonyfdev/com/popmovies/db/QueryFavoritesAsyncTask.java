@@ -14,7 +14,7 @@ import java.util.List;
 import anthonyfdev.com.popmovies.discovery.model.Movie;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin
  */
 
 public class QueryFavoritesAsyncTask extends AsyncTask<Void, Void, List<Movie>> {

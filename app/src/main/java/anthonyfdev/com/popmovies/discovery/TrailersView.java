@@ -22,7 +22,7 @@ import anthonyfdev.com.popmovies.R;
 import anthonyfdev.com.popmovies.discovery.model.Trailer;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin ()
  */
 
 public class TrailersView extends FrameLayout {

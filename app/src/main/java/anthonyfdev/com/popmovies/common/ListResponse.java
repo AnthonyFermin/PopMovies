@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin
  */
 
 public abstract class ListResponse<TModel extends BaseModel> extends BaseModel {

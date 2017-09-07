@@ -3,7 +3,7 @@ package anthonyfdev.com.popmovies.discovery.model;
 import anthonyfdev.com.popmovies.common.ListResponse;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin ()
  */
 
 public class ReviewResponse extends ListResponse<Review> {
