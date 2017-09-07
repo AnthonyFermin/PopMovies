@@ -58,7 +58,6 @@ public class TrailersView extends FrameLayout {
         rvTrailers = (RecyclerView) findViewById(R.id.rv_trailers);
         tvEmptyText = (TextView) findViewById(R.id.tv_emptyText);
         progressBar = findViewById(R.id.progress_bar);
-
         trailerAdapter = new TrailerAdapter();
         rvTrailers.setLayoutManager(new LinearLayoutManager(getContext()));
         rvTrailers.setAdapter(trailerAdapter);

@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.net.URL;
-import java.util.List;
+import java.util.ArrayList;
 
 import anthonyfdev.com.popmovies.R;
 import anthonyfdev.com.popmovies.common.BaseModelAsyncTask;
@@ -33,6 +33,8 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
     private static final String ENDPOINT_TOP_RATED = "/movie/top_rated";
     private static final String SIS_KEY_CURRENT_ENDPOINT = TAG + ":argCurrentEndpoint";
     private static final String SIS_KEY_MODE = TAG + ":argMode";
+    private static final String SIS_KEY_CURRENT_MOVIES = TAG + ":currentMovies";
+    private static final String SIS_KEY_CURRENT_FAVORITES = TAG + ":currentFavorites";
     private RecyclerView rvMovies;
     private MovieDiscoveryAdapter adapter;
     private BaseModelAsyncTask<MovieResponse> movieAsyncTask;
@@ -41,14 +43,8 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
     private URL currentEndpoint;
     private int mode;
     private SharedPreferences favSharedPrefs;
-    private final SharedPreferences.OnSharedPreferenceChangeListener favSharedPrefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (mode == R.string.MovieDiscovery_MyFavoriteMovies) {
-                refreshListWithFavorites();
-            }
-        }
-    };
+    private ArrayList<Movie> currentFavorites;
+    private ArrayList<Movie> currentMovies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +58,19 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
             buildUrl(ENDPOINT_POPULAR);
         }
         if (mode == R.string.MovieDiscovery_MyFavoriteMovies) {
-            refreshListWithFavorites();
+            if (currentFavorites != null) {
+                favoritesAsyncTaskListener.onPostExecute(currentFavorites);
+            } else {
+                refreshListWithFavorites();
+            }
         } else {
-            refreshListWithNewCall(mode);
+            if (currentMovies != null) {
+                MovieResponse movieResponse = new MovieResponse();
+                movieResponse.setResults(currentMovies);
+                movieAsyncTaskListener.onPostExecute(movieResponse);
+            } else {
+                refreshListWithNewCall(mode);
+            }
         }
     }
 
@@ -76,6 +82,8 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(SIS_KEY_CURRENT_MOVIES, currentMovies);
+        outState.putParcelableArrayList(SIS_KEY_CURRENT_FAVORITES, currentFavorites);
         outState.putSerializable(SIS_KEY_CURRENT_ENDPOINT, currentEndpoint);
         outState.putInt(SIS_KEY_MODE, mode);
     }
@@ -124,6 +132,7 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
     }
 
     private void refreshListWithFavorites() {
+        currentFavorites = null;
         if (favoritesAsyncTask != null) {
             favoritesAsyncTask.cancel(true);
         }
@@ -136,6 +145,8 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             currentEndpoint = (URL) savedInstanceState.getSerializable(SIS_KEY_CURRENT_ENDPOINT);
             mode = savedInstanceState.getInt(SIS_KEY_MODE);
+            currentMovies = savedInstanceState.getParcelableArrayList(SIS_KEY_CURRENT_MOVIES);
+            currentFavorites = savedInstanceState.getParcelableArrayList(SIS_KEY_CURRENT_FAVORITES);
         }
     }
 
@@ -152,6 +163,7 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
     }
 
     private void refreshListWithNewCall(@StringRes int mode) {
+        currentMovies = null;
         if (movieAsyncTask != null) {
             movieAsyncTask.cancel(true);
         }
@@ -197,8 +209,9 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onPostExecute(List<Movie> favorites) {
+        public void onPostExecute(ArrayList<Movie> favorites) {
             flLoadingIndicator.setVisibility(View.GONE);
+            currentFavorites = favorites;
             if (favorites != null) {
                 adapter.setMovieList(favorites);
                 if (favorites.isEmpty()) {
@@ -223,6 +236,15 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
                 .show();
     }
 
+    private final SharedPreferences.OnSharedPreferenceChangeListener favSharedPrefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (mode == R.string.MovieDiscovery_MyFavoriteMovies) {
+                refreshListWithFavorites();
+            }
+        }
+    };
+
     private final BaseModelAsyncTask.AsyncTaskListener<MovieResponse> movieAsyncTaskListener = new BaseModelAsyncTask.AsyncTaskListener<MovieResponse>() {
         @Override
         public void onPreExecute() {
@@ -233,8 +255,9 @@ public class MovieDiscoveryActivity extends AppCompatActivity {
         public void onPostExecute(MovieResponse result) {
             flLoadingIndicator.setVisibility(View.GONE);
             if (result != null) {
-                adapter.setMovieList(result.getResults());
-                if (result.getResults().isEmpty()) {
+                currentMovies = result.getResults();
+                adapter.setMovieList(currentMovies);
+                if (currentMovies.isEmpty()) {
                     showErrorDialog(getString(R.string.MovieDiscovery_NoMoviesFound));
                 }
             } else {

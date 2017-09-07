@@ -9,4 +9,5 @@
     <dimen name="half_margin">8dp</dimen>
     <dimen name="standard_margin">16dp</dimen>
     <dimen name="MovieDetail_TrailerThumbnailWidth">100dp</dimen>
+    <dimen name="MovieDetail_BottomSheetPeekAmount">50dp</dimen>
 </resources>

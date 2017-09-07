@@ -59,7 +59,6 @@ public class ReviewsView extends FrameLayout {
         rvReviews = (RecyclerView) findViewById(R.id.rv_reviews);
         tvEmptyText = (TextView) findViewById(R.id.tv_emptyText);
         progressBar = findViewById(R.id.progress_bar);
-
         reviewAdapter = new ReviewAdapter();
         rvReviews.setLayoutManager(new LinearLayoutManager(getContext()));
         rvReviews.setAdapter(reviewAdapter);

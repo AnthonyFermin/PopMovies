@@ -1,5 +1,7 @@
 package anthonyfdev.com.popmovies.discovery.model;
 
+import java.util.ArrayList;
+
 import anthonyfdev.com.popmovies.common.ListResponse;
 
 /**
@@ -11,4 +13,9 @@ public class MovieResponse extends ListResponse<Movie> {
         clazz = Movie.class;
         listPropertyName = "results";
     }
+
+    public void setResults(ArrayList<Movie> results) {
+        this.results = results;
+    }
+
 }
