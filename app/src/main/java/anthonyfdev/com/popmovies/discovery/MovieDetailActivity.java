@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import anthonyfdev.com.popmovies.R;
 import anthonyfdev.com.popmovies.common.BaseModelAsyncTask;
 import anthonyfdev.com.popmovies.common.Constants;
+import anthonyfdev.com.popmovies.common.MyBottomSheetBehavior;
 import anthonyfdev.com.popmovies.common.TMDBNetworkHelper;
 import anthonyfdev.com.popmovies.db.DeleteFavoriteAsyncTask;
 import anthonyfdev.com.popmovies.db.InsertFavoriteAsyncTask;
@@ -70,6 +71,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private int bottomSheetState;
     private ArrayList<Review> currentReviews;
     private ArrayList<Trailer> currentTrailers;
+    private MyBottomSheetBehavior<View> bottomSheetBehavior;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -196,9 +198,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         trailersView = new TrailersView(this);
         reviewsView = new ReviewsView(this);
         viewPager.setAdapter(new ViewPagerAdapter());
+        viewPager.addOnPageChangeListener(onPageChangeListener);
 
         //Bottom sheet
-        BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior = MyBottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(bottomSheetState);
         bottomSheetBehavior.setBottomSheetCallback(bottomSheetCallback);
         bottomSheetBehavior.setPeekHeight(
@@ -256,11 +259,11 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
     }
 
-    private final BottomSheetBehavior.BottomSheetCallback bottomSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
+    private final MyBottomSheetBehavior.BottomSheetCallback bottomSheetCallback = new MyBottomSheetBehavior.BottomSheetCallback() {
         @Override
         public void onStateChanged(@NonNull View bottomSheet, int newState) {
-            if (newState == BottomSheetBehavior.STATE_COLLAPSED
-                    || newState == BottomSheetBehavior.STATE_EXPANDED) {
+            if (newState == MyBottomSheetBehavior.STATE_COLLAPSED
+                    || newState == MyBottomSheetBehavior.STATE_EXPANDED) {
                 bottomSheetState = newState;
             }
         }
@@ -304,6 +307,29 @@ public class MovieDetailActivity extends AppCompatActivity {
                 reviewsView.setReviews(currentReviews);
             }
             reviewsView.setLoading(false);
+        }
+    };
+
+    private final ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            if (bottomSheetBehavior != null) {
+                if (position == 0) {
+                    bottomSheetBehavior.setNestedScrollingChild(trailersView.getRvTrailers());
+                } else if (position == 1) {
+                    bottomSheetBehavior.setNestedScrollingChild(reviewsView.getRvReviews());
+                }
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
         }
     };
 

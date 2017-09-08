@@ -78,4 +78,7 @@ public class TrailersView extends FrameLayout {
         progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
     }
 
+    public RecyclerView getRvTrailers() {
+        return rvTrailers;
+    }
 }

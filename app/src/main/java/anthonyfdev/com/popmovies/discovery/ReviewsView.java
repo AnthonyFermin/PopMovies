@@ -79,4 +79,7 @@ public class ReviewsView extends FrameLayout {
         progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
     }
 
+    public RecyclerView getRvReviews() {
+        return rvReviews;
+    }
 }
