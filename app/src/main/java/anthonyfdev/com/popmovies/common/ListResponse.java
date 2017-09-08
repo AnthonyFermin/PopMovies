@@ -6,10 +6,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin
  */
 
 public abstract class ListResponse<TModel extends BaseModel> extends BaseModel {
@@ -17,7 +16,7 @@ public abstract class ListResponse<TModel extends BaseModel> extends BaseModel {
     private final static String TAG = ListResponse.class.getSimpleName();
     protected static Class clazz;
     protected static String listPropertyName;
-    private List<TModel> results = new ArrayList<>();
+    protected ArrayList<TModel> results = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
     @Override
@@ -42,7 +41,7 @@ public abstract class ListResponse<TModel extends BaseModel> extends BaseModel {
         }
     }
 
-    public List<TModel> getResults() {
+    public ArrayList<TModel> getResults() {
         return results;
     }
 

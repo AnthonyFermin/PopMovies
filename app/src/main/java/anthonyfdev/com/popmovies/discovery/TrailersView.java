@@ -22,7 +22,7 @@ import anthonyfdev.com.popmovies.R;
 import anthonyfdev.com.popmovies.discovery.model.Trailer;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin ()
  */
 
 public class TrailersView extends FrameLayout {
@@ -58,7 +58,6 @@ public class TrailersView extends FrameLayout {
         rvTrailers = (RecyclerView) findViewById(R.id.rv_trailers);
         tvEmptyText = (TextView) findViewById(R.id.tv_emptyText);
         progressBar = findViewById(R.id.progress_bar);
-
         trailerAdapter = new TrailerAdapter();
         rvTrailers.setLayoutManager(new LinearLayoutManager(getContext()));
         rvTrailers.setAdapter(trailerAdapter);
@@ -79,4 +78,7 @@ public class TrailersView extends FrameLayout {
         progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
     }
 
+    public RecyclerView getRvTrailers() {
+        return rvTrailers;
+    }
 }

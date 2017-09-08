@@ -1,7 +1,7 @@
 package anthonyfdev.com.popmovies.common;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin
  */
 
 public class Constants {

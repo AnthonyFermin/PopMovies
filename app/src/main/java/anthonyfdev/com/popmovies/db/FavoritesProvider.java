@@ -12,7 +12,7 @@ import android.support.annotation.NonNull;
 import static anthonyfdev.com.popmovies.db.FavoriteContract.FavoriteEntry.TABLE_NAME;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin
  */
 
 public class FavoritesProvider extends ContentProvider {

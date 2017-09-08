@@ -22,7 +22,7 @@ import anthonyfdev.com.popmovies.R;
 import anthonyfdev.com.popmovies.discovery.model.Review;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin ()
  */
 
 public class ReviewsView extends FrameLayout {
@@ -59,7 +59,6 @@ public class ReviewsView extends FrameLayout {
         rvReviews = (RecyclerView) findViewById(R.id.rv_reviews);
         tvEmptyText = (TextView) findViewById(R.id.tv_emptyText);
         progressBar = findViewById(R.id.progress_bar);
-
         reviewAdapter = new ReviewAdapter();
         rvReviews.setLayoutManager(new LinearLayoutManager(getContext()));
         rvReviews.setAdapter(reviewAdapter);
@@ -80,4 +79,7 @@ public class ReviewsView extends FrameLayout {
         progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
     }
 
+    public RecyclerView getRvReviews() {
+        return rvReviews;
+    }
 }

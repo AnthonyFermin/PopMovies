@@ -1,9 +1,9 @@
 package anthonyfdev.com.popmovies.discovery;
 
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
@@ -11,7 +11,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,19 +21,23 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 import anthonyfdev.com.popmovies.R;
 import anthonyfdev.com.popmovies.common.BaseModelAsyncTask;
 import anthonyfdev.com.popmovies.common.Constants;
+import anthonyfdev.com.popmovies.common.MyBottomSheetBehavior;
 import anthonyfdev.com.popmovies.common.TMDBNetworkHelper;
 import anthonyfdev.com.popmovies.db.DeleteFavoriteAsyncTask;
 import anthonyfdev.com.popmovies.db.InsertFavoriteAsyncTask;
 import anthonyfdev.com.popmovies.discovery.model.Movie;
+import anthonyfdev.com.popmovies.discovery.model.Review;
 import anthonyfdev.com.popmovies.discovery.model.ReviewResponse;
+import anthonyfdev.com.popmovies.discovery.model.Trailer;
 import anthonyfdev.com.popmovies.discovery.model.TrailerResponse;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin ()
  */
 
 public class MovieDetailActivity extends AppCompatActivity {
@@ -46,6 +49,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     private static final int VIEW_PAGER_COUNT = 2;
     private static final String SIS_KEY_INITIALLY_FAVORITED = TAG + ":initiallyFavorited";
     private static final String SIS_KEY_IS_FAVORITED = TAG + ":isFavorited";
+    private static final String SIS_KEY_BOTTOM_SHEET_STATE = TAG + ":bottomSheetState";
+    private static final String SIS_KEY_CURRENT_TRAILERS = TAG + ":currentTrailers";
+    private static final String SIS_KEY_CURRENT_REVIEWS = TAG + ":currentReviews";
     private Movie movie;
     private TextView tvOverView;
     private TextView tvRating;
@@ -62,7 +68,10 @@ public class MovieDetailActivity extends AppCompatActivity {
     private boolean initiallyFavorited;
     private boolean isFavorited;
     private View bottomSheet;
-    private BottomSheetBehavior<View> bottomSheetBehavior;
+    private int bottomSheetState;
+    private ArrayList<Review> currentReviews;
+    private ArrayList<Trailer> currentTrailers;
+    private MyBottomSheetBehavior<View> bottomSheetBehavior;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,13 +82,29 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             initiallyFavorited = savedInstanceState.getBoolean(SIS_KEY_INITIALLY_FAVORITED, isMovieFavorited());
             isFavorited = savedInstanceState.getBoolean(SIS_KEY_IS_FAVORITED, initiallyFavorited);
+            bottomSheetState = savedInstanceState.getInt(SIS_KEY_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED);
+            currentTrailers = savedInstanceState.getParcelableArrayList(SIS_KEY_CURRENT_TRAILERS);
+            currentReviews = savedInstanceState.getParcelableArrayList(SIS_KEY_CURRENT_REVIEWS);
         } else {
             initiallyFavorited = isFavorited = isMovieFavorited();
+            bottomSheetState = BottomSheetBehavior.STATE_COLLAPSED;
         }
         bindViews();
         setupViews();
-        fetchTrailers();
-        fetchReviews();
+        if (currentReviews != null) {
+            ReviewResponse reviewResponse = new ReviewResponse();
+            reviewResponse.setResults(currentReviews);
+            reviewAsyncTaskListener.onPostExecute(reviewResponse);
+        } else {
+            fetchReviews();
+        }
+        if (currentTrailers != null) {
+            TrailerResponse trailerResponse = new TrailerResponse();
+            trailerResponse.setResults(currentTrailers);
+            trailerAsyncTaskListener.onPostExecute(trailerResponse);
+        } else {
+            fetchTrailers();
+        }
     }
 
     @Override
@@ -101,6 +126,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putBoolean(SIS_KEY_INITIALLY_FAVORITED, initiallyFavorited);
         outState.putBoolean(SIS_KEY_IS_FAVORITED, isFavorited);
+        outState.putInt(SIS_KEY_BOTTOM_SHEET_STATE, bottomSheetState);
+        outState.putParcelableArrayList(SIS_KEY_CURRENT_REVIEWS, currentReviews);
+        outState.putParcelableArrayList(SIS_KEY_CURRENT_TRAILERS, currentTrailers);
     }
 
     private boolean isMovieFavorited() {
@@ -139,12 +167,14 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private void fetchTrailers() {
+        currentTrailers = null;
         trailerAsyncTask = new BaseModelAsyncTask<>(trailerAsyncTaskListener, TrailerResponse.class);
         URL endpoint = TMDBNetworkHelper.buildUrl(this, PATH_TRAILERS.replace("$s1", movie.getId()));
         trailerAsyncTask.execute(endpoint);
     }
 
     private void fetchReviews() {
+        currentReviews = null;
         reviewsAsyncTask = new BaseModelAsyncTask<>(reviewAsyncTaskListener, ReviewResponse.class);
         URL endpoint = TMDBNetworkHelper.buildUrl(this, PATH_REVIEWS.replace("$s1", movie.getId()));
         reviewsAsyncTask.execute(endpoint);
@@ -168,14 +198,15 @@ public class MovieDetailActivity extends AppCompatActivity {
         trailersView = new TrailersView(this);
         reviewsView = new ReviewsView(this);
         viewPager.setAdapter(new ViewPagerAdapter());
+        viewPager.addOnPageChangeListener(onPageChangeListener);
 
         //Bottom sheet
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        Resources resources = getResources();
-        int peekAmt = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                (float) resources.getInteger(R.integer.MovieDetail_BottomSheetPeekAmount),
-                resources.getDisplayMetrics());
-        bottomSheetBehavior.setPeekHeight(peekAmt);
+        bottomSheetBehavior = MyBottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setState(bottomSheetState);
+        bottomSheetBehavior.setBottomSheetCallback(bottomSheetCallback);
+        bottomSheetBehavior.setPeekHeight(
+                getResources()
+                        .getDimensionPixelSize(R.dimen.MovieDetail_BottomSheetPeekAmount));
     }
 
     private void bindViews() {
@@ -228,6 +259,21 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
     }
 
+    private final MyBottomSheetBehavior.BottomSheetCallback bottomSheetCallback = new MyBottomSheetBehavior.BottomSheetCallback() {
+        @Override
+        public void onStateChanged(@NonNull View bottomSheet, int newState) {
+            if (newState == MyBottomSheetBehavior.STATE_COLLAPSED
+                    || newState == MyBottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetState = newState;
+            }
+        }
+
+        @Override
+        public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            //no op
+        }
+    };
+
     private final BaseModelAsyncTask.AsyncTaskListener<TrailerResponse> trailerAsyncTaskListener = new BaseModelAsyncTask.AsyncTaskListener<TrailerResponse>() {
         @Override
         public void onPreExecute() {
@@ -239,7 +285,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             if (result != null
                     && result.getResults() != null
                     && !result.getResults().isEmpty()) {
-                trailersView.setTrailers(result.getResults());
+                currentTrailers = result.getResults();
+                trailersView.setTrailers(currentTrailers);
             }
             trailersView.setLoading(false);
         }
@@ -256,9 +303,33 @@ public class MovieDetailActivity extends AppCompatActivity {
             if (result != null
                     && result.getResults() != null
                     && !result.getResults().isEmpty()) {
-                reviewsView.setReviews(result.getResults());
+                currentReviews = result.getResults();
+                reviewsView.setReviews(currentReviews);
             }
             reviewsView.setLoading(false);
+        }
+    };
+
+    private final ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            if (bottomSheetBehavior != null) {
+                if (position == 0) {
+                    bottomSheetBehavior.setNestedScrollingChild(trailersView.getRvTrailers());
+                } else if (position == 1) {
+                    bottomSheetBehavior.setNestedScrollingChild(reviewsView.getRvReviews());
+                }
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
         }
     };
 

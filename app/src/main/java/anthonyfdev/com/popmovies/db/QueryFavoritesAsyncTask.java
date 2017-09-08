@@ -14,10 +14,10 @@ import java.util.List;
 import anthonyfdev.com.popmovies.discovery.model.Movie;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin
  */
 
-public class QueryFavoritesAsyncTask extends AsyncTask<Void, Void, List<Movie>> {
+public class QueryFavoritesAsyncTask extends AsyncTask<Void, Void, ArrayList<Movie>> {
 
     private final ContentProviderClient provider;
     private Listener listener;
@@ -40,13 +40,13 @@ public class QueryFavoritesAsyncTask extends AsyncTask<Void, Void, List<Movie>> 
     }
 
     @Override
-    protected List<Movie> doInBackground(Void... params) {
+    protected ArrayList<Movie> doInBackground(Void... params) {
         Uri uri = new Uri.Builder()
                 .authority(FavoriteContract.CONTENT_AUTHORITY)
                 .appendPath(FavoriteContract.PATH_FAVORITE)
                 .build();
         Cursor cursor = null;
-        List<Movie> movies = new ArrayList<>();
+        ArrayList<Movie> movies = new ArrayList<>();
         try {
             cursor = provider.query(uri, null, null, null, null);
             extractFromCursor(cursor, movies);
@@ -61,7 +61,7 @@ public class QueryFavoritesAsyncTask extends AsyncTask<Void, Void, List<Movie>> 
     }
 
     @Override
-    protected void onPostExecute(List<Movie> movies) {
+    protected void onPostExecute(ArrayList<Movie> movies) {
         super.onPostExecute(movies);
         if (listener != null) {
             listener.onPostExecute(movies);
@@ -84,6 +84,6 @@ public class QueryFavoritesAsyncTask extends AsyncTask<Void, Void, List<Movie>> 
 
     public interface Listener {
         void onPreExecute();
-        void onPostExecute(List<Movie> favorites);
+        void onPostExecute(ArrayList<Movie> favorites);
     }
 }

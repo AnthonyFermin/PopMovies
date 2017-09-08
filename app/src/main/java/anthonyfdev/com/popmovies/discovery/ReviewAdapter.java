@@ -12,7 +12,7 @@ import anthonyfdev.com.popmovies.R;
 import anthonyfdev.com.popmovies.discovery.model.Review;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin
  */
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
@@ -36,7 +36,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     @Override
     public int getItemCount() {
-        return reviews != null ? reviews.size() : 0;
+        return reviews != null ? reviews.size(): 0;
     }
 
     public class ReviewViewHolder extends RecyclerView.ViewHolder {
@@ -51,9 +51,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         }
 
         public void bind(int position) {
-            Review review = reviews.get(position);
-            tvAuthor.setText(review.getAuthor());
-            tvBody.setText(review.getContent());
+            if (position >= 0 && position < reviews.size()) {
+                Review review = reviews.get(position);
+                tvAuthor.setText(review.getAuthor());
+                tvBody.setText(review.getContent());
+            } else {
+                tvAuthor.setText("");
+                tvBody.setText("");
+            }
         }
     }
 

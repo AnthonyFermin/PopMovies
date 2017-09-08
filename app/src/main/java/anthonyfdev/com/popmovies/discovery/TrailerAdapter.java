@@ -18,7 +18,7 @@ import anthonyfdev.com.popmovies.common.TMDBNetworkHelper;
 import anthonyfdev.com.popmovies.discovery.model.Trailer;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin ()
  */
 
 class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder> {

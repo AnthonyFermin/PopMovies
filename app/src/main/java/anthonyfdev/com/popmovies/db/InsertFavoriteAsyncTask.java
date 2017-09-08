@@ -11,7 +11,7 @@ import android.os.RemoteException;
 import anthonyfdev.com.popmovies.discovery.model.Movie;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin
  */
 
 public class InsertFavoriteAsyncTask extends AsyncTask<Movie, Void, Boolean> {

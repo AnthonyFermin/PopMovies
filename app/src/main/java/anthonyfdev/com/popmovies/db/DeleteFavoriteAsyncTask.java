@@ -8,7 +8,7 @@ import android.os.AsyncTask;
 import android.os.RemoteException;
 
 /**
- * @author Anthony Fermin (Fuzz)
+ * @author Anthony Fermin
  */
 
 public class DeleteFavoriteAsyncTask extends AsyncTask<String, Void, Boolean> {
